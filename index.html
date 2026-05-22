@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Resume Workspace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Application Dashboard Dark Theme UI */
+            --bg-workspace: #090a0f;
+            --bg-sidebar: #11131e;
+            --bg-card: #181b28;
+            --bg-input: #0d0f17;
+            --border-ui: rgba(255, 255, 255, 0.06);
+            --border-focus: #4f46e5;
+            
+            --accent-primary: #6366f1;
+            --accent-gradient: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --text-label: #94a3b8;
+
+            /* Printable Document Layout Variables (Executive Corporate Contrast) */
+            --resume-bg: #ffffff;
+            --resume-primary: #0f172a;    
+            --resume-secondary: #334155;  
+            --resume-muted: #64748b;      
+            --resume-accent: #1e3a8a;     
+            --resume-border: #cbd5e1;     
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-workspace);
+            color: var(--text-main);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* MASTER SPLIT-SCREEN WORKSPACE */
+        .workspace {
+            display: grid;
+            grid-template-columns: 500px 1fr;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* LEFT SIDEBAR: INPUT CONTROL RIG */
+        .input-sidebar {
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--border-ui);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.15);
+            border-bottom: 1px solid var(--border-ui);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+        .brand-title i {
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.3rem;
+        }
+        .brand-title span b {
+            color: var(--accent-primary);
+            font-weight: 800;
+        }
+
+        .form-scroller {
+            padding: 24px;
+            overflow-y: auto;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* INPUT BLOCK CONTAINER CARDS */
+        .form-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-ui);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-header-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .card-header-wrapper h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+        .card-header-wrapper h3 i {
+            color: var(--accent-primary);
+            font-size: 1rem;
+        }
+
+        /* PREMIUM TOGGLE RIG FOR FRESHERS */
+        .fresher-toggle-box {
+            display: flex;
+            align-items: center;
+            background: rgba(99, 102, 241, 0.08);
+            border: 1px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 16px;
+            justify-content: space-between;
+        }
+        .toggle-label-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #a5b4fc;
+        }
+        .switch-input-ui {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+        .switch-input-ui input { opacity: 0; width: 0; height: 0; }
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-ui);
+            transition: .3s;
+            border-radius: 34px;
+        }
+        .slider-round:before {
+            position: absolute;
+            content: "";
+            height: 14px; width: 14px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        input:checked + .slider-round { background-color: var(--accent-primary); border-color: var(--accent-primary); }
+        input:checked + .slider-round:before { transform: translateX(22px); }
+
+        /* LAYOUT FIELD CONTROLS */
+        .field-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .input-group.no-margin { margin-bottom: 0; }
+
+        .input-group label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-label);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        input[type="text"], input[type="email"], textarea {
+            background: var(--bg-input);
+            border: 1px solid var(--border-ui);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 0.88rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+            background: rgba(13, 15, 23, 0.9);
+        }
+
+        /* REORDERABLE / DYNAMIC FORM SUB-CARDS */
+        .dynamic-record {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .dynamic-record:last-child { margin-bottom: 0; }
+
+        .btn-action-delete {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: transparent;
+            border: none;
+            color: #f43f5e;
+            cursor: pointer;
+            font-size: 0.85rem;
+            opacity: 0.6;
+            transition: opacity 0.2s;
+        }
+        .btn-action-delete:hover { opacity: 1; }
+
+        /* SKILLS COMPACT FIELD RIG */
+        .skills-field-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .skill-input-pill {
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-input);
+            border: 1px solid var(--border-ui);
+            padding: 4px 8px;
+            border-radius: 6px;
+            gap: 6px;
+        }
+        .skill-input-pill input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 0.8rem;
+            width: 90px;
+            padding: 2px 0;
+        }
+        .skill-input-pill input:focus { outline: none; }
+        .skill-input-pill button {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .skill-input-pill button:hover { color: #f43f5e; }
+
+        /* PREMIUM APP ACTION BUTTONS */
+        .btn-prime {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s;
+        }
+        .btn-prime:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-add-node {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-main);
+            border: 1px solid var(--border-ui);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: background 0.2s;
+        }
+        .btn-add-node:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* RIGHT PANEL: IMMERSIVE PREVIEW CANVAS */
+        .preview-canvas {
+            background: #141622;
+            overflow-y: auto;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 50px 20px;
+            height: 100vh;
+        }
+
+        /* THE LIVE PRINT ENGINE SHEET (A4 SPEC) */
+        .a4-document {
+            background: var(--resume-bg);
+            color: var(--resume-secondary);
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm 20mm;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HIGH-LEVEL EXECUTIVE HEADER DESIGN */
+        .doc-header {
+            border-bottom: 2px solid var(--resume-primary);
+            padding-bottom: 18px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .doc-header-left h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            color: var(--resume-primary);
+            line-height: 1;
+            letter-spacing: -0.5px;
+            min-height: 2.6rem;
+        }
+
+        .doc-header-left h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--resume-accent);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            min-height: 1.2rem;
+        }
+
+        .doc-header-right-contacts {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            text-align: right;
+            font-size: 0.82rem;
+            color: var(--resume-muted);
+            font-weight: 500;
+        }
+        .doc-header-right-contacts span i {
+            color: var(--resume-primary);
+            margin-right: 6px;
+            font-size: 0.85rem;
+            width: 14px;
+            text-align: center;
+        }
+
+        /* TWO COLUMN ASYMMETRICAL BALANCED LAYOUT GRID */
+        .doc-grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 220px; 
+            gap: 32px;
+            flex-grow: 1;
+        }
+
+        .doc-section {
+            margin-bottom: 24px;
+            display: none; 
+        }
+        .doc-section:last-child { margin-bottom: 0; }
+
+        .doc-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--resume-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--resume-border);
+            padding-bottom: 4px;
+            margin-bottom: 14px;
+        }
+
+        .summary-text {
+            font-size: 0.88rem;
+            line-height: 1.55;
+            color: var(--resume-secondary);
+            text-align: justify;
+        }
+
+        /* PROFESSIONAL COMPONENT DATA NODES */
+        .data-node {
+            margin-bottom: 18px;
+        }
+        .data-node:last-child { margin-bottom: 0; }
+
+        .node-meta-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--resume-primary);
+        }
+        
+        .node-sub-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            font-size: 0.84rem;
+            color: var(--resume-accent);
+            font-weight: 600;
+            margin: 2px 0 6px 0;
+        }
+
+        .node-timeline {
+            font-size: 0.8rem;
+            color: var(--resume-muted);
+            font-weight: 500;
+        }
+
+        .node-body-content {
+            font-size: 0.85rem;
+            line-height: 1.5;
+            white-space: pre-line;
+            color: var(--resume-secondary);
+        }
+
+        /* SKILLS DISPLAY ENGINE BLOCKS */
+        .resume-skills-flex-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .resume-skill-tag {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: var(--resume-primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        /* SYSTEM CORE PRINT MODULE */
+        @media print {
+            body, .workspace {
+                background: none !important;
+                overflow: visible !important;
+                height: auto !important;
+                display: block !important;
+                width: auto !important;
+            }
+            .input-sidebar {
+                display: none !important;
+            }
+            .preview-canvas {
+                background: none !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                overflow: visible !important;
+                height: auto !important;
+                display: block !important;
+            }
+            .a4-document {
+                box-shadow: none !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                page-break-inside: avoid;
+            }
+            .doc-section {
+                display: block !important; 
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="workspace">
+        <aside class="input-sidebar">
+            <header class="sidebar-header">
+                <div class="brand-title">
+                    <i class="fa-solid fa-folder-tree"></i>
+                    <span>Nova<b>Architect</b></span>
+                </div>
+                <button id="triggerPrint" class="btn-prime"><i class="fa-solid fa-file-pdf"></i> Export Document</button>
+            </header>
+
+            <div class="form-scroller">
+                <section class="form-card">
+                    <div class="card-header-wrapper">
+                        <h3><i class="fa-solid fa-id-card"></i> Contact Identity</h3>
+                    </div>
+                    <div class="field-grid-2">
+                        <div class="input-group">
+                            <label>Full Identity Name</label>
+                            <input type="text" id="inName" placeholder="e.g. Jane Doe">
+                        </div>
+                        <div class="input-group">
+                            <label>Corporate Title Target</label>
+                            <input type="text" id="inTitle" placeholder="e.g. Software Engineer">
+                        </div>
+                    </div>
+                    <div class="field-grid-2">
+                        <div class="input-group">
+                            <label>Secure Email</label>
+                            <input type="email" id="inEmail" placeholder="e.g. jane.doe@example.com">
+                        </div>
+                        <div class="input-group">
+                            <label>Contact Phone</label>
+                            <input type="text" id="inPhone" placeholder="e.g. +1 (555) 000-0000">
+                        </div>
+                    </div>
+                    <div class="field-grid-2">
+                        <div class="input-group">
+                            <label>Geographic Location</label>
+                            <input type="text" id="inLocation" placeholder="e.g. New York, NY">
+                        </div>
+                        <div class="input-group">
+                            <label>Professional Portfolio URL</label>
+                            <input type="text" id="inLink" placeholder="e.g. linkedin.com/in/username">
+                        </div>
+                    </div>
+                    <div class="input-group no-margin">
+                        <label>Executive Summary Declaration</label>
+                        <textarea id="inSummary" rows="4" placeholder="Brief high-impact synthesis of your professional trajectory..."></textarea>
+                    </div>
+                </section>
+
+                <section class="form-card">
+                    <div class="card-header-wrapper">
+                        <h3 id="experienceCardTitle"><i class="fa-solid fa-building-briefcase"></i> Professional History</h3>
+                        <button type="button" class="btn-add-node" onclick="appendExperienceNode()"><i class="fa-solid fa-plus"></i> Append</button>
+                    </div>
+                    
+                    <div class="fresher-toggle-box">
+                        <div class="toggle-label-text">Activate Fresher Student Mode</div>
+                        <label class="switch-input-ui">
+                            <input type="checkbox" id="fresherSwitchToggle" onchange="toggleFresherModeStatus(this.checked)">
+                            <span class="slider-round"></span>
+                        </label>
+                    </div>
+                    
+                    <div id="experienceFormAnchor"></div>
+                </section>
+
+                <section class="form-card">
+                    <div class="card-header-wrapper">
+                        <h3><i class="fa-solid fa-graduation-cap"></i> Education Records</h3>
+                        <button type="button" class="btn-add-node" onclick="appendEducationNode()"><i class="fa-solid fa-plus"></i> Append</button>
+                    </div>
+                    <div id="educationFormAnchor"></div>
+                </section>
+
+                <section class="form-card">
+                    <div class="card-header-wrapper">
+                        <h3><i class="fa-solid fa-layer-group"></i> Core Competencies</h3>
+                        <button type="button" class="btn-add-node" onclick="appendSkillNode()"><i class="fa-solid fa-plus"></i> Append Tag</button>
+                    </div>
+                    <div id="skillsFormAnchor" class="skills-field-flex"></div>
+                </section>
+            </div>
+        </aside>
+
+        <main class="preview-canvas">
+            <div class="a4-document" id="liveDocumentOutput">
+                
+                <header class="doc-header">
+                    <div class="doc-header-left">
+                        <h1 id="lblOutName"></h1>
+                        <h2 id="lblOutTitle"></h2>
+                    </div>
+                    <div class="doc-header-right-contacts">
+                        <span id="lblOutEmail"></span>
+                        <span id="lblOutPhone"></span>
+                        <span id="lblOutLocation"></span>
+                        <span id="lblOutLink"></span>
+                    </div>
+                </header>
+
+                <div class="doc-grid-layout">
+                    <div class="doc-primary-column">
+                        <section class="doc-section" id="blockSummary">
+                            <h3 class="doc-section-title">Executive Summary</h3>
+                            <p class="summary-text" id="lblOutSummary"></p>
+                        </section>
+
+                        <section class="doc-section" id="blockExperience">
+                            <h3 class="doc-section-title" id="lblOutExperienceHeading">Professional Experience</h3>
+                            <div id="lblOutExperienceGrid"></div>
+                        </section>
+                    </div>
+
+                    <div class="doc-metadata-column">
+                        <section class="doc-section" id="blockSkills">
+                            <h3 class="doc-section-title">Core Expertise</h3>
+                            <div id="lblOutSkillsGrid" class="resume-skills-flex-wrap"></div>
+                        </section>
+
+                        <section class="doc-section" id="blockEducation">
+                            <h3 class="doc-section-title">Education</h3>
+                            <div id="lblOutEducationGrid"></div>
+                        </section>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Production State Clean Reactive Framework Data Structure 
+        const dataStore = {
+            isFresher: false,
+            personal: { name: "", title: "", email: "", phone: "", location: "", link: "", summary: "" },
+            experience: [], // Stores either corporate history records or engineering project instances
+            education: [],
+            skills: []
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            compileFormArrays();
+            computeLiveRenderDocument();
+            bindEventPipelines();
+        });
+
+        function bindEventPipelines() {
+            const reactiveFields = ['Name', 'Title', 'Email', 'Phone', 'Location', 'Link', 'Summary'];
+            reactiveFields.forEach(field => {
+                document.getElementById(`in${field}`).addEventListener('input', (e) => {
+                    dataStore.personal[field.toLowerCase()] = e.target.value;
+                    computeLiveRenderDocument();
+                });
+            });
+
+            document.getElementById('triggerPrint').addEventListener('click', () => {
+                window.print();
+            });
+        }
+
+        /* TOGGLE MODE FOR FRESHERS SYSTEM CAPABILITY */
+        window.toggleFresherModeStatus = (isChecked) => {
+            dataStore.isFresher = isChecked;
+            dataStore.experience = []; // Clear array inputs to match current state context cleanly
+            
+            const cardTitleEl = document.getElementById('experienceCardTitle');
+            if(isChecked) {
+                cardTitleEl.innerHTML = `<i class="fa-solid fa-code-branch"></i> Academic Projects`;
+            } else {
+                cardTitleEl.innerHTML = `<i class="fa-solid fa-building-briefcase"></i> Professional History`;
+            }
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        /* COMPONENT ARRAYS FORM GENERATION SYSTEM */
+        function compileFormArrays() {
+            const expAnchor = document.getElementById('experienceFormAnchor');
+            
+            if(dataStore.isFresher) {
+                // Renders alternative custom engineering project subforms
+                expAnchor.innerHTML = dataStore.experience.map(proj => `
+                    <div class="dynamic-record" data-node-id="${proj.id}">
+                        <button class="btn-action-delete" onclick="dropNodeTarget('experience', ${proj.id})"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="field-grid-2">
+                            <div class="input-group">
+                                <label>Project Name / Title</label>
+                                <input type="text" value="${proj.role}" placeholder="e.g. VisionTrac AI Engine" oninput="alterNodeItem('experience', ${proj.id}, 'role', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>Core Stack / Framework</label>
+                                <input type="text" value="${proj.company}" placeholder="e.g. Python, YOLOv8, Streamlit" oninput="alterNodeItem('experience', ${proj.id}, 'company', this.value)">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Timeline / Development Window</label>
+                            <input type="text" value="${proj.duration}" placeholder="e.g. Mar 2026 - May 2026" oninput="alterNodeItem('experience', ${proj.id}, 'duration', this.value)">
+                        </div>
+                        <div class="input-group no-margin">
+                            <label>Key Features & Engineering Metrics</label>
+                            <textarea rows="3" placeholder="• Implemented real-time object tracking utilizing TF-IDF calculations.\n• Optimized rendering viewport structures drop cycles by 15%." oninput="alterNodeItem('experience', ${proj.id}, 'desc', this.value)">${proj.desc}</textarea>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                // Standard default professional tracking subform configurations
+                expAnchor.innerHTML = dataStore.experience.map(exp => `
+                    <div class="dynamic-record" data-node-id="${exp.id}">
+                        <button class="btn-action-delete" onclick="dropNodeTarget('experience', ${exp.id})"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="field-grid-2">
+                            <div class="input-group">
+                                <label>Role Definition</label>
+                                <input type="text" value="${exp.role}" placeholder="e.g. Lead Developer" oninput="alterNodeItem('experience', ${exp.id}, 'role', this.value)">
+                            </div>
+                            <div class="input-group">
+                                <label>Enterprise Entity</label>
+                                <input type="text" value="${exp.company}" placeholder="e.g. Tech Corp" oninput="alterNodeItem('experience', ${exp.id}, 'company', this.value)">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label>Operational Timeline</label>
+                            <input type="text" value="${exp.duration}" placeholder="e.g. 2022 - Present" oninput="alterNodeItem('experience', ${exp.id}, 'duration', this.value)">
+                        </div>
+                        <div class="input-group no-margin">
+                            <label>Core Matrix Achievements</label>
+                            <textarea rows="3" placeholder="• Key responsibility or measurable metric achievements..." oninput="alterNodeItem('experience', ${exp.id}, 'desc', this.value)">${exp.desc}</textarea>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Education Cards Build Engine
+            const eduAnchor = document.getElementById('educationFormAnchor');
+            eduAnchor.innerHTML = dataStore.education.map(edu => `
+                <div class="dynamic-record" data-node-id="${edu.id}">
+                    <button class="btn-action-delete" onclick="dropNodeTarget('education', ${edu.id})"><i class="fa-solid fa-trash-can"></i></button>
+                    <div class="field-grid-2">
+                        <div class="input-group">
+                            <label>Degree Path Standard</label>
+                            <input type="text" value="${edu.degree}" placeholder="e.g. B.S. Information Technology" oninput="alterNodeItem('education', ${edu.id}, 'degree', this.value)">
+                        </div>
+                        <div class="input-group">
+                            <label>Institution / Facility</label>
+                            <input type="text" value="${edu.school}" placeholder="e.g. Model College" oninput="alterNodeItem('education', ${edu.id}, 'school', this.value)">
+                        </div>
+                    </div>
+                    <div class="input-group no-margin">
+                        <label>Timeline Calendar Frame</label>
+                        <input type="text" value="${edu.duration}" placeholder="e.g. 2024 - 2027" oninput="alterNodeItem('education', ${edu.id}, 'duration', this.value)">
+                    </div>
+                </div>
+            `).join('');
+
+            // Skill Badges Input Pill Matrix Engine
+            const skillsAnchor = document.getElementById('skillsFormAnchor');
+            skillsAnchor.innerHTML = dataStore.skills.map((skill, pointer) => `
+                <div class="skill-input-pill">
+                    <input type="text" value="${skill}" placeholder="Skill Tag" oninput="alterSkillTag(${pointer}, this.value)">
+                    <button type="button" onclick="dropSkillTag(${pointer})"><i class="fa-solid fa-circle-xmark"></i></button>
+                </div>
+            `).join('');
+        }
+
+        /* APP LOGIC MUTATORS DISPATCH HANDLERS */
+        window.appendExperienceNode = () => {
+            dataStore.experience.push({ id: Date.now(), role: "", company: "", duration: "", desc: "" });
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        window.appendEducationNode = () => {
+            dataStore.education.push({ id: Date.now(), degree: "", school: "", duration: "" });
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        window.appendSkillNode = () => {
+            dataStore.skills.push("");
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        window.alterNodeItem = (arrayTarget, entryId, subFieldKey, actualStringValue) => {
+            const targetRecord = dataStore[arrayTarget].find(obj => obj.id === entryId);
+            if (targetRecord) {
+                targetRecord[subFieldKey] = actualStringValue;
+                computeLiveRenderDocument();
+            }
+        };
+
+        window.dropNodeTarget = (arrayTarget, entryId) => {
+            dataStore[arrayTarget] = dataStore[arrayTarget].filter(obj => obj.id !== entryId);
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        window.alterSkillTag = (indexPointer, rawValue) => {
+            dataStore.skills[indexPointer] = rawValue;
+            computeLiveRenderDocument();
+        };
+
+        window.dropSkillTag = (indexPointer) => {
+            dataStore.skills.splice(indexPointer, 1);
+            compileFormArrays();
+            computeLiveRenderDocument();
+        };
+
+        /* LIVE PREVIEW COMPOSITOR ENGINE & DYNAMIC HIDING REGULATION */
+        function computeLiveRenderDocument() {
+            document.getElementById('lblOutName').innerText = dataStore.personal.name || '';
+            document.getElementById('lblOutTitle').innerText = dataStore.personal.title || '';
+            
+            document.getElementById('lblOutEmail').innerHTML = dataStore.personal.email ? `<i class="fa-solid fa-envelope"></i> ${dataStore.personal.email}` : '';
+            document.getElementById('lblOutPhone').innerHTML = dataStore.personal.phone ? `<i class="fa-solid fa-phone"></i> ${dataStore.personal.phone}` : '';
+            document.getElementById('lblOutLocation').innerHTML = dataStore.personal.location ? `<i class="fa-solid fa-location-dot"></i> ${dataStore.personal.location}` : '';
+            document.getElementById('lblOutLink').innerHTML = dataStore.personal.link ? `<i class="fa-solid fa-globe"></i> ${dataStore.personal.link}` : '';
+
+            // Section 1 Logic: Summary Gate
+            const blockSummary = document.getElementById('blockSummary');
+            if (dataStore.personal.summary.trim()) {
+                blockSummary.style.display = 'block';
+                document.getElementById('lblOutSummary').innerText = dataStore.personal.summary;
+            } else {
+                blockSummary.style.display = 'none';
+            }
+
+            // Section 2 Logic: Experience/Projects Live Swapper Output
+            const blockExperience = document.getElementById('blockExperience');
+            const headingEl = document.getElementById('lblOutExperienceHeading');
+            
+            if(dataStore.isFresher) {
+                headingEl.innerText = "Projects & Key Technical Work";
+            } else {
+                headingEl.innerText = "Professional Experience";
+            }
+
+            if (dataStore.experience.length > 0) {
+                blockExperience.style.display = 'block';
+                document.getElementById('lblOutExperienceGrid').innerHTML = dataStore.experience.map(exp => `
+                    <div class="data-node">
+                        <div class="node-meta-line">
+                            <span>${exp.role || (dataStore.isFresher ? 'Project Title' : 'Designation Title')}</span>
+                            <span class="node-timeline">${exp.duration || ''}</span>
+                        </div>
+                        <div class="node-sub-line">
+                            <span>${exp.company || (dataStore.isFresher ? 'Core Stack System' : '')}</span>
+                        </div>
+                        <div class="node-body-content">${exp.desc || ''}</div>
+                    </div>
+                `).join('');
+            } else {
+                blockExperience.style.display = 'none';
+            }
+
+            // Section 3 Logic: Education Rendering Pipeline Grid
+            const blockEducation = document.getElementById('blockEducation');
+            if (dataStore.education.length > 0) {
+                blockEducation.style.display = 'block';
+                document.getElementById('lblOutEducationGrid').innerHTML = dataStore.education.map(edu => `
+                    <div class="data-node">
+                        <div class="node-meta-line" style="font-size:0.85rem;">
+                            <span>${edu.degree || 'Degree Path'}</span>
+                        </div>
+                        <div class="node-sub-line" style="margin-bottom:2px;">
+                            <span>${edu.school || ''}</span>
+                        </div>
+                        <div class="node-timeline" style="font-size:0.75rem;">${edu.duration || ''}</div>
+                    </div>
+                `).join('');
+            } else {
+                blockEducation.style.display = 'none';
+            }
+
+            // Section 4 Logic: Clean Core Expertise Badge String Engine Array Mapping Loops
+            const blockSkills = document.getElementById('blockSkills');
+            const validSkills = dataStore.skills.filter(val => val.trim() !== "");
+            if (validSkills.length > 0) {
+                blockSkills.style.display = 'block';
+                document.getElementById('lblOutSkillsGrid').innerHTML = validSkills
+                    .map(cleanSkillString => `<span class="resume-skill-tag">${cleanSkillString}</span>`).join('');
+            } else {
+                blockSkills.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
